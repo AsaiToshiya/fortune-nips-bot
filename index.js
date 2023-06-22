@@ -103,29 +103,38 @@ const now = Math.floor(Date.now() / 1000);
 fs.writeFileSync("date.txt", now.toString());
 
 const pool = new SimplePool();
-(
-  await pool.list(relays, [
-    {
-      kinds: [1],
-      "#p": [pk],
-      since: date,
-      until: now,
-    },
-  ])
-)
-  .filter((post) => post.pubkey != pk)
-  .map((post) =>
-    finishEvent(
+await Promise.all(
+  (
+    await pool.list(relays, [
       {
-        kind: 1,
-        created_at: Math.floor(Date.now() / 1000),
-        tags: createTags(post),
-        content: createContent(post),
+        kinds: [1],
+        "#p": [pk],
+        since: date,
+        until: now,
       },
-      sk
-    )
+    ])
   )
-  .forEach((reply) => pool.publish(relays, reply));
+    .filter((post) => post.pubkey != pk)
+    .map((post) =>
+      finishEvent(
+        {
+          kind: 1,
+          created_at: Math.floor(Date.now() / 1000),
+          tags: createTags(post),
+          content: createContent(post),
+        },
+        sk
+      )
+    )
+    .map(
+      (reply) =>
+        new Promise((resolve, reject) => {
+          const pub = pool.publish(relays, reply);
+          pub.on("ok", resolve);
+          pub.on("failed", reject);
+        })
+    )
+);
 pool.close(relays);
 
 process.exit();
