@@ -114,7 +114,7 @@ await Promise.all(
       },
     ])
   )
-    .filter((post) => post.pubkey != pk)
+    .filter((post) => post.tags.every((tag) => tag[0] != "e"))
     .map((post) =>
       finishEvent(
         {
