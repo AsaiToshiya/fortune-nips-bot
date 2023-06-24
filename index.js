@@ -103,18 +103,18 @@ const now = Math.floor(Date.now() / 1000);
 fs.writeFileSync("date.txt", now.toString());
 
 const pool = new SimplePool();
+const posts = (
+  await pool.list(relays, [
+    {
+      kinds: [1],
+      "#p": [pk],
+      since: date,
+      until: now,
+    },
+  ])
+).filter((post) => post.tags.every((tag) => tag[0] != "e"));
 await Promise.all(
-  (
-    await pool.list(relays, [
-      {
-        kinds: [1],
-        "#p": [pk],
-        since: date,
-        until: now,
-      },
-    ])
-  )
-    .filter((post) => post.tags.every((tag) => tag[0] != "e"))
+  posts
     .map((post) =>
       finishEvent(
         {
