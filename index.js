@@ -113,27 +113,26 @@ const posts = (
     },
   ])
 ).filter((post) => post.tags.every((tag) => tag[0] != "e"));
+const replies = posts.map((post) =>
+  finishEvent(
+    {
+      kind: 1,
+      created_at: Math.floor(Date.now() / 1000),
+      tags: createTags(post),
+      content: createContent(post),
+    },
+    sk
+  )
+);
 await Promise.all(
-  posts
-    .map((post) =>
-      finishEvent(
-        {
-          kind: 1,
-          created_at: Math.floor(Date.now() / 1000),
-          tags: createTags(post),
-          content: createContent(post),
-        },
-        sk
-      )
-    )
-    .map(
-      (reply) =>
-        new Promise((resolve, reject) => {
-          const pub = pool.publish(relays, reply);
-          pub.on("ok", resolve);
-          pub.on("failed", reject);
-        })
-    )
+  replies.map(
+    (reply) =>
+      new Promise((resolve, reject) => {
+        const pub = pool.publish(relays, reply);
+        pub.on("ok", resolve);
+        pub.on("failed", reject);
+      })
+  )
 );
 pool.close(relays);
 
