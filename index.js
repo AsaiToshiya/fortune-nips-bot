@@ -23,12 +23,7 @@ const createTags = (post) => {
   const pTags = post.tags.filter(
     (tag) => tag[0] == "p" && tag[1] != post.pubkey
   );
-  const hasETag = post.tags.some((tag) => tag[0] == "e");
-  return [
-    ...pTags,
-    ["e", post.id, "", hasETag ? "reply" : "root"],
-    ["p", post.pubkey],
-  ];
+  return [...pTags, ["e", post.id, "", "root"], ["p", post.pubkey]];
 };
 const convertToNumber = (hash, range) => {
   const decimal = parseInt(hash, 16);
