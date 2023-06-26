@@ -35,6 +35,7 @@ const generateHash = (value1, value2) => {
   hash.update(value2.toString());
   return hash.digest("hex");
 };
+const unixTimeNow = () => Math.floor(Date.now() / 1000);
 const withoutTime = (date) =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
@@ -93,7 +94,7 @@ const sk = nip19.decode(process.env.NSEC).data;
 const pk = getPublicKey(sk);
 
 const date = parseInt(fs.readFileSync("date.txt"));
-const now = Math.floor(Date.now() / 1000);
+const now = unixTimeNow();
 
 fs.writeFileSync("date.txt", now.toString());
 
@@ -112,7 +113,7 @@ const replies = posts.map((post) =>
   finishEvent(
     {
       kind: 1,
-      created_at: Math.floor(Date.now() / 1000),
+      created_at: unixTimeNow(),
       tags: createTags(post),
       content: createContent(post),
     },
