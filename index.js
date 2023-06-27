@@ -62,28 +62,37 @@ const sk = nip19.decode(process.env.NSEC).data;
 const pk = getPublicKey(sk);
 
 // 投稿をフェッチする範囲
-const date = parseInt(fs.readFileSync("date.txt"));
 const now = unixTimeNow();
-
-// 実行日時を更新する
-fs.writeFileSync("date.txt", now.toString());
+const twoMinutesAgo = now - 2 * 60 * 1000;
 
 const pool = new SimplePool();
 
 // 投稿
-const posts = (
-  await pool.list(relays, [
-    {
-      kinds: [1],
-      "#p": [pk],
-      since: date,
-      until: now,
-    },
-  ])
-).filter((post) => post.tags.every((tag) => tag[0] != "e")); // 返信に返信しない
+const posts = await pool.list(relays, [
+  {
+    kinds: [1],
+    "#p": [pk],
+    since: twoMinutesAgo,
+    until: now,
+  },
+]);
+
+// 返信済みの投稿の ID
+const repliedPostIds = posts
+  .filter((post) => post.pubkey == pk) // ボットか
+  .map((post) => post.tags.find((tag) => tag[0] == "e")[1]);
+
+// メンション
+// prettier-ignore
+const mentions = posts.filter(
+  (post) =>
+    post.pubkey != pk &&                    // ボットではないか
+    !repliedPostIds.includes(post.id) &&    // 返信済みではないか
+    post.tags.every((tag) => tag[0] != "e") // 返信に返信しない
+);
 
 // 返信
-const replies = posts.map((post) =>
+const replies = mentions.map((post) =>
   finishEvent(
     {
       kind: 1,
