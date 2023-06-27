@@ -63,7 +63,7 @@ const pk = getPublicKey(sk);
 
 // 投稿をフェッチする範囲
 const now = unixTimeNow();
-const twoMinutesAgo = now - 2 * 60 * 1000;
+const twoMinutesAgo = now - 2 * 60;
 
 const pool = new SimplePool();
 
