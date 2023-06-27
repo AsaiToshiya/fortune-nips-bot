@@ -20,6 +20,7 @@ const createContent = (post) => {
 ${nip[0]}
 https://github.com/nostr-protocol/nips/blob/master/${nip[1]}`;
 };
+
 // タグの配列を生成する
 const createTags = (post) => {
   // 投稿者を除外する
@@ -28,11 +29,13 @@ const createTags = (post) => {
   );
   return [...pTags, ["e", post.id, "", "root"], ["p", post.pubkey]];
 };
+
 // ハッシュを数値に変換する
 const convertToNumber = (hash, range) => {
   const decimal = parseInt(hash, 16);
   return decimal % (range + 1);
 };
+
 // ハッシュを生成する
 const generateHash = (value1, value2) => {
   const hash = crypto.createHash("sha256");
@@ -40,8 +43,10 @@ const generateHash = (value1, value2) => {
   hash.update(value2.toString());
   return hash.digest("hex");
 };
+
 // 現在の UNIX 時間を返す
 const unixTimeNow = () => Math.floor(Date.now() / 1000);
+
 // Date オブジェクトから時刻を取り除く
 const withoutTime = (date) =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -64,6 +69,7 @@ const now = unixTimeNow();
 fs.writeFileSync("date.txt", now.toString());
 
 const pool = new SimplePool();
+
 // 投稿
 const posts = (
   await pool.list(relays, [
@@ -75,6 +81,7 @@ const posts = (
     },
   ])
 ).filter((post) => post.tags.every((tag) => tag[0] != "e")); // 返信に返信しない
+
 // 返信
 const replies = posts.map((post) =>
   finishEvent(
@@ -87,6 +94,7 @@ const replies = posts.map((post) =>
     sk
   )
 );
+
 // 返信を発行する
 await Promise.all(
   replies.map(
@@ -98,7 +106,7 @@ await Promise.all(
       })
   )
 );
+
 // 後処理を実行する
 pool.close(relays);
-
 process.exit();
