@@ -11,7 +11,8 @@ import "websocket-polyfill";
 const createContent = (post) => {
   const hash = generateHash(
     post.pubkey,
-    withoutTime(new Date(post.created_at * 1000))
+    withoutTime(new Date(post.created_at * 1000)),
+    sk
   );
   const index = convertToNumber(hash, nips.length - 1);
   const nip = nips[index];
@@ -37,10 +38,11 @@ const convertToNumber = (hash, range) => {
 };
 
 // ハッシュを生成する
-const generateHash = (value1, value2) => {
+const generateHash = (value1, value2, value3) => {
   const hash = crypto.createHash("sha256");
   hash.update(value1.toString());
   hash.update(value2.toString());
+  hash.update(value3.toString());
   return hash.digest("hex");
 };
 
