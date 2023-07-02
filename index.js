@@ -18,8 +18,8 @@ const createContent = (post) => {
   const nip = nips[index];
   return `今日のラッキー NIP
 
-${nip[0]}
-https://github.com/nostr-protocol/nips/blob/master/${nip[1]}`;
+${nip.title}
+https://github.com/nostr-protocol/nips/blob/master/${nip.filename}`;
 };
 
 // タグの配列を生成する
@@ -58,7 +58,11 @@ const nips = fs
   .readFileSync("nips.csv")
   .toString()
   .split("\n")
-  .map((line) => line.split(","));
+  .map((line) => line.split(","))
+  .map((data) => ({
+    title: data[0],
+    filename: data[1],
+  }));
 const relays = JSON.parse(process.env.RELAYS.replace(/'/g, '"'));
 const sk = nip19.decode(process.env.NSEC).data;
 const pk = getPublicKey(sk);
