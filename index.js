@@ -66,6 +66,7 @@ const nips = fs
 const relays = JSON.parse(process.env.RELAYS.replace(/'/g, '"'));
 const sk = nip19.decode(process.env.NSEC).data;
 const pk = getPublicKey(sk);
+const npub = nip19.npubEncode(pk);
 
 // 投稿をフェッチする範囲
 const now = unixTimeNow();
@@ -92,9 +93,10 @@ const repliedPostIds = posts
 // prettier-ignore
 const mentions = posts.filter(
   (post) =>
-    post.pubkey != pk &&                    // ボットではないか
-    !repliedPostIds.includes(post.id) &&    // 返信済みではないか
-    post.tags.every((tag) => tag[0] != "e") // 返信に返信しない
+    post.pubkey != pk &&                       // ボットではないか
+    !repliedPostIds.includes(post.id) &&       // 返信済みではないか
+    post.tags.every((tag) => tag[0] != "e") && // 返信に返信しない
+    post.content.includes(`nostr:${npub}`)     // content にボットの npub を含むか
 );
 
 // 返信
