@@ -1,12 +1,12 @@
-日本語 | [English](./README-en.md)
+[日本語](./README.md) | English
 
-# NIPs 占い
+# Fortune NIPs
 
-「NIPs 占い」は、Nostr の NIPs 占いボットです。
+Fortune NIPs is a fortune NIPs bot on Nostr.
 
-このボットは、メンションに返信します。
+This bot replies to mentions.
 
-## セットアップ
+## Setup
 
 ```bash
 git clone https://github.com/AsaiToshiya/fortune-nips-bot.git
@@ -14,9 +14,9 @@ cd fortune-nips-bot
 npm install
 ```
 
-## 使い方
+## Usage
 
-1. .env 内の秘密鍵を変更
+1. Change the secret key in .env file
 
    .env:
   
@@ -24,13 +24,13 @@ npm install
    NSEC=nsec1fe9rt8twt6l96a977e0r02w6sqhffcwdr3zzcy6s8pxpq3rrchpqhwnvek
    ```
 
-2. スクリプトを実行
+2. Run the script
 
    ```bash
    node index.js
    ```
 
-## ライセンス
+## License
 
     MIT License
 
