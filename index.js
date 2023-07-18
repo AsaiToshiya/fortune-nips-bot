@@ -13,7 +13,7 @@ const createContent = (post) => {
     post.pubkey,
     withoutTime(new Date(post.created_at * 1000)),
     sk
-  );
+  ).substring(0, 2);
   const index = convertToNumber(hash, nips.length - 1);
   const nip = nips[index];
   return `今日のラッキー NIP
