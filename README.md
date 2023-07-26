@@ -27,7 +27,7 @@ npm install
 2. スクリプトを実行
 
    ```bash
-   npx ts-node --esm index.ts
+   node index.js
    ```
 
 ## ライセンス
