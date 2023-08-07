@@ -2,7 +2,7 @@
 
 # Fortune NIPs
 
-Fortune NIPs is a fortune NIPs bot on Nostr.
+Fortune NIPs is a bot on Nostr that tells your lucky NIP of the day.
 
 This bot replies to mentions.
 
