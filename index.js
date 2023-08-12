@@ -3,7 +3,7 @@ import crypto from "crypto";
 import * as dotenv from "dotenv";
 dotenv.config();
 dotenv.config({ path: ".env.local", override: true });
-import { SimplePool, nip19, getPublicKey, finishEvent } from "nostr-tools";
+import { SimplePool, nip19, getPublicKey, finishEvent, Kind, } from "nostr-tools";
 import "websocket-polyfill";
 // コンテキストを生成する
 const createContent = (post) => {
@@ -59,7 +59,7 @@ const pool = new SimplePool();
 // 投稿
 const posts = await pool.list(relays, [
     {
-        kinds: [1],
+        kinds: [Kind.Text],
         "#p": [pk],
         since: twoMinutesAgo,
         until: now,
@@ -78,7 +78,7 @@ const mentions = posts.filter((post) => post.pubkey != pk && // ボットでは�
 );
 // 返信
 const replies = mentions.map((post) => finishEvent({
-    kind: 1,
+    kind: Kind.Text,
     created_at: unixTimeNow(),
     tags: createTags(post),
     content: createContent(post),

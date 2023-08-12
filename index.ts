@@ -4,11 +4,18 @@ import crypto from "crypto";
 import * as dotenv from "dotenv";
 dotenv.config();
 dotenv.config({ path: ".env.local", override: true });
-import { SimplePool, nip19, getPublicKey, finishEvent, Event } from "nostr-tools";
+import {
+  SimplePool,
+  nip19,
+  getPublicKey,
+  finishEvent,
+  Event,
+  Kind,
+} from "nostr-tools";
 import "websocket-polyfill";
 
 // コンテキストを生成する
-const createContent = (post: Event<1>) => {
+const createContent = (post: Event<Kind.Text>) => {
   const hash = generateHash(
     post.pubkey,
     withoutTime(new Date(post.created_at * 1000)),
@@ -23,7 +30,7 @@ https://github.com/nostr-protocol/nips/blob/master/${nip.filename}`;
 };
 
 // タグの配列を生成する
-const createTags = (post: Event<1>) => {
+const createTags = (post: Event<Kind.Text>) => {
   // 投稿者を除外する
   const pTags = post.tags.filter(
     (tag: string[]) => tag[0] == "p" && tag[1] != post.pubkey
@@ -77,7 +84,7 @@ const pool = new SimplePool();
 // 投稿
 const posts = await pool.list(relays, [
   {
-    kinds: [1],
+    kinds: [Kind.Text],
     "#p": [pk],
     since: twoMinutesAgo,
     until: now,
@@ -86,13 +93,16 @@ const posts = await pool.list(relays, [
 
 // 返信済みの投稿の ID
 const repliedPostIds = posts
-  .filter((post: Event<1>) => post.pubkey == pk) // ボットか
-  .map((post: Event<1>) => post.tags.find((tag: string[]) => tag[0] == "e")![1]);
+  .filter((post: Event<Kind.Text>) => post.pubkey == pk) // ボットか
+  .map(
+    (post: Event<Kind.Text>) =>
+      post.tags.find((tag: string[]) => tag[0] == "e")![1]
+  );
 
 // メンション
 // prettier-ignore
 const mentions = posts.filter(
-  (post: Event<1>) => post.pubkey != pk &&                       // ボットではないか
+  (post: Event<Kind.Text>) => post.pubkey != pk &&                       // ボットではないか
   !repliedPostIds.includes(post.id) &&       // 返信済みではないか
   post.tags.every((tag: string[]) => tag[0] != "e") && // 返信に返信しない
   post.content.includes(`nostr:${npub}`)     // content にボットの npub を含むか
@@ -102,7 +112,7 @@ const mentions = posts.filter(
 const replies = mentions.map((post: Event<1>) =>
   finishEvent(
     {
-      kind: 1,
+      kind: Kind.Text,
       created_at: unixTimeNow(),
       tags: createTags(post),
       content: createContent(post),
@@ -114,7 +124,7 @@ const replies = mentions.map((post: Event<1>) =>
 // 返信を発行する
 await Promise.all(
   replies.map(
-    (reply: Event<1>) =>
+    (reply: Event<Kind.Text>) =>
       new Promise((resolve, reject) => {
         const pub = pool.publish(relays, reply);
         pub.on("ok", resolve);
