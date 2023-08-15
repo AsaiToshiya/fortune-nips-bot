@@ -9,14 +9,11 @@ NIP-08: Handling Mentions,08.md
 NIP-09: Event Deletion,09.md
 NIP-10: Conventions for clients' use of `e` and `p` tags in text events,10.md
 NIP-11: Relay Information Document,11.md
-NIP-12: Generic Tag Queries,12.md
 NIP-13: Proof of Work,13.md
 NIP-14: Subject tag in text events,14.md
 NIP-15: Nostr Marketplace (for resilient marketplaces),15.md
-NIP-16: Event Treatment,16.md
 NIP-18: Reposts,18.md
 NIP-19: bech32-encoded entities,19.md
-NIP-20: Command Results,20.md
 NIP-21: `nostr:` URI scheme,21.md
 NIP-22: Event `created_at` Limits,22.md
 NIP-23: Long-form Content,23.md
@@ -27,7 +24,6 @@ NIP-28: Public Chat,28.md
 NIP-30: Custom Emoji,30.md
 NIP-31: Dealing with Unknown Events,31.md
 NIP-32: Labeling,32.md
-NIP-33: Parameterized Replaceable Events,33.md
 NIP-36: Sensitive Content,36.md
 NIP-39: External Identities in Profiles,39.md
 NIP-40: Expiration Timestamp,40.md
