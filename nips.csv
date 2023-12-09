@@ -1,5 +1,5 @@
 NIP-01: Basic protocol flow description,01.md
-NIP-02: Contact List and Petnames,02.md
+NIP-02: Follow List,02.md
 NIP-03: OpenTimestamps Attestations for Events,03.md
 NIP-04: Encrypted Direct Message,04.md
 NIP-05: Mapping Nostr keys to DNS-based internet identifiers,05.md
