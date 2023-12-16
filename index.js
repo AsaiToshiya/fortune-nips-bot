@@ -43,7 +43,7 @@ const nips = fs
     .readFileSync("nips.csv")
     .toString()
     .split("\n")
-    .map((line) => line.split(","))
+    .map((line) => line && line.split(","))
     .map((data) => ({
     title: data[0],
     filename: data[1],
